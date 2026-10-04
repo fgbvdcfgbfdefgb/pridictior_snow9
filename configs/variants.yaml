@@ -1,0 +1,59 @@
+# ------------------------------------------------------------------
+# One model variant per GPU (Phase 2B).
+#   `torchrun --nproc_per_node=4` -> global rank i trains variants[i].
+#   All variants share the streaming "real-time reward" protocol and
+#   only differ in architecture / optimisation hyper-parameters,
+#   exactly as requested: a different predictor per GPU.
+# ------------------------------------------------------------------
+horizon_sec: 1500        # predict price 25 minutes ahead, updated every second
+lookback_sec: 43200      # 12 h of second-by-second history as model input
+quantiles: [0.1, 0.5, 0.9]
+
+variants:
+  - name: v0_base
+    d_model: 512
+    nhead: 8
+    num_layers: 8
+    ff_dim: 2048
+    dropout: 0.10
+    lr: 3.0e-4
+    weight_decay: 0.01
+    smooth_penalty: 1.0    # weight of the prediction-stability regulariser
+    batch_updates_every: 32       # optimiser step after this many matured rewards
+    seed: 101
+
+  - name: v1_wide
+    d_model: 768
+    nhead: 12
+    num_layers: 6
+    ff_dim: 3072
+    dropout: 0.10
+    lr: 2.0e-4
+    weight_decay: 0.02
+    smooth_penalty: 1.0
+    batch_updates_every: 32
+    seed: 202
+
+  - name: v2_deep
+    d_model: 384
+    nhead: 6
+    num_layers: 10
+    ff_dim: 1536
+    dropout: 0.15
+    lr: 5.0e-4
+    weight_decay: 0.01
+    smooth_penalty: 0.5
+    batch_updates_every: 32
+    seed: 303
+
+  - name: v3_smooth
+    d_model: 512
+    nhead: 8
+    num_layers: 8
+    ff_dim: 2048
+    dropout: 0.10
+    lr: 1.0e-4
+    weight_decay: 0.01
+    smooth_penalty: 3.0    # strongest stability constraint -> smoothest signal
+    batch_updates_every: 32
+    seed: 404

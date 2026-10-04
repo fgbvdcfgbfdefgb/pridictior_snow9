@@ -1,0 +1,20 @@
+# ------------------------------------------------------------------
+# Dataset configuration  (Phase 1)
+#   Source : Binance public historical archive (data.binance.vision)
+#   Granularity : 1-second klines (OHLCV + taker-buy volume + trades)
+#   Coverage : 2020-01-01 .. today
+# ------------------------------------------------------------------
+symbol: BTCUSDT
+interval: 1s
+start: "2020-01-01"
+end: null                 # null = today (resolved at run time)
+out_dir: data/raw         # one parquet shard per month: <out_dir>/BTCUSDT-1s-YYYY-MM.parquet
+cache_dir: data/cache     # precomputed feature memmaps live here
+
+fallback_to_aggtrades: true   # if a month's 1s klines are unavailable, build 1s bars from aggTrades
+verify_checksums: true
+
+# Second-by-second grid policy: the market sometimes has no print in a given
+# second. We forward-fill the close and emit volume=0 bars, flagging them with
+# the `was_gap` input feature so the model can learn "no information".
+gap_fill: true

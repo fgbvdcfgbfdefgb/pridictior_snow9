@@ -1,0 +1,16 @@
+# ------------------------------------------------------------------
+# Streaming (online) training  —  "no epochs, real-time reward"
+# ------------------------------------------------------------------
+speed: max              # replay as fast as hardware allows (or e.g. 60 = 60 sim-sec / wall-sec)
+precision: bf16         # AMP on the A10s
+grad_clip: 1.0
+ema_decay: 0.999        # EMA weights are exported for visualisation/inference
+
+# Reward/logging cadence (in MARKET seconds, not wall seconds)
+log_every_sim_sec: 60
+checkpoint_every_sim_sec: 1800     # full snapshot (model+opt+ema+rng) every 30 market-minutes
+keep_all_checkpoints: true         # you said storage is a non-issue (1 PB) -> keep everything
+
+# 25-min-ahead prediction quality targets
+mape_report_window_sec: 3600       # rolling accuracy window for the accuracy bar
+band_coverage_target: 0.80         # theoretical coverage of the [q10, q90] band

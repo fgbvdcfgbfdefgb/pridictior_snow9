@@ -1,0 +1,24 @@
+# --- data & artifacts (large; kept out of git, restored via scripts) ---
+data/raw/
+data/cache/
+checkpoints/
+runs/
+videos/
+*.mp4
+*.gif
+*.npz
+
+# --- python ---
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+.pytest_cache/
+
+# --- secrets (NEVER commit api keys / tokens) ---
+.env
+*.key
+github_token.txt
+
+# allow the tiny committed sample shard
+!data/sample/**
