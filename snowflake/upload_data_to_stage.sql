@@ -1,11 +1,15 @@
 -- ============================================================================
 -- snow9 — stage setup for OFFLINE Snowflake training
 --
--- Snowflake has NO internet in this setup, so the dataset must be pushed from
--- a machine that does. Steps:
---   1) With internet:   scripts/01_download_data.sh        (creates data/raw/*.parquet)
---   2) From SnowSQL / Snowflake CLI on that machine:  run the PUTs below
---   3) In the Snowflake Notebook: use the @SNOW9.PUBLIC.BTC_SNOW9_STAGE stage
+-- SECTION A (below): run anywhere — Snowsight worksheet, the notebook, or a
+--   client. Safe to re-run (all IF NOT EXISTS). The Snowflake notebook does
+--   this itself, so running this file is OPTIONAL if you use the notebook.
+--
+-- SECTION B (the PUT commands in comments): MUST run from a client that can
+--   see the files (SnowSQL / Snowflake CLI on the machine with the dataset),
+--   because Snowflake itself has no internet. Alternative for a quick test:
+--   Snowsight -> Data -> Databases -> SNOW9 -> PUBLIC -> Stages ->
+--   BTC_SNOW9_STAGE -> "+ Files" and drop the zip + a few .parquet shards.
 -- ============================================================================
 
 CREATE DATABASE IF NOT EXISTS SNOW9;
